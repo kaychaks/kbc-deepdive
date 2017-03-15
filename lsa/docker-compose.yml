@@ -1,0 +1,7 @@
+version: "2"
+services:
+ lsa:
+  image: ## LSA DOCKER IMAGE 
+  volumes:
+   - # e.g. /Users/kaushik/Developer/src/deepdiveapps/kbc/:/root/apps
+  tty: true

@@ -1,0 +1,20 @@
+version: "2"
+services:
+  deepdive:
+    image: kaushik/deepdive # change this to match the image you build
+    # to build container using docker-compose, comment above line and uncomment below line
+    #build: .
+    volumes:
+      - /Users/kaushik/Developer/src/deepdiveapps:/root/apps # change this to match your local system setup
+    links:
+      - db
+    tty: true
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=deepdive
+      - POSTGRES_DB=deepdive_docker
+    expose:
+      - '5432'
+    volumes:
+      - /Users/kaushik/Developer/src/deepdiveapps/db:/var/lib/postgresql/data # change this to match your local system setup

@@ -1,0 +1,20 @@
+version: "2"
+services:
+  kbc-deepdive:
+    image: ## DEEPDIVE DOCKER IMAGE
+    volumes:
+      # change the path to match location in your filesystem
+      - # e.g. /Users/kaushik/Developer/src/work/deepdiveapps/kbc/:/root/apps
+    links:
+      - db:db
+    tty: true
+  db:
+    image: hazyresearch/postgres
+    environment:
+      - POSTGRES_PASSWORD=deepdive
+      - POSTGRES_DB=deepdive_kbc
+    expose:
+      - '5432'
+    volumes:
+      # change the path to match location in your filesystem
+      - # e.g. /Users/kaushik/Developer/src/work/deepdiveapps/db:/var/lib/postgresql/data

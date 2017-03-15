@@ -1,0 +1,56 @@
+## Input data
+transcripts(
+  id uuid,
+  date timestamptz,
+  department text,
+  agent text,
+  chat text
+).
+
+turns(
+  trans_id uuid,
+  agent_or_user text,
+  name text,
+  chat text,
+  turn_id int,
+  reply_to int
+).
+
+sentences(    
+    doc_id text,
+    sentence_index int,    
+    sentence_text  text,
+    tokens         text[],
+    lemmas         text[],
+    pos_tags       text[],
+    ner_tags       text[],
+    doc_offsets    int[],
+    dep_types      text[],
+    dep_tokens     int[]
+).
+
+## Derivations
+agents(  
+  name text
+).
+agents(name) *:- transcripts(_,_,_,name,_).
+
+function turn_gen over (
+        id uuid,
+        chat text
+    ) returns rows like turns
+    implementation "udf/turn_gen.sc" handles tsv lines.
+
+turns += turn_gen(id, chat) :-
+      transcripts(id, _, _, _, chat).
+
+## NLP
+
+function nlp_chat over (
+        id text,
+        chat text
+    ) returns rows like sentences
+    implementation "udf/nlp_chat.sh" handles tsv lines.
+
+sentences += nlp_chat((trans_id :: text) || "_" || turn_id, chat):-
+    turns(trans_id,_,_,chat,turn_id,_), [chat != "";chat IS NOT NULL],!chat LIKE "%<p align=\"center\">Chat Origin:%".
